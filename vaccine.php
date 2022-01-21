@@ -1,0 +1,122 @@
+<?php
+require_once "connect.php";
+require_once "is_logged_in.php";
+
+$query = "SELECT * FROM vaccines";
+$result = $conn->query($query);
+
+if(isset($_GET['delete'])) {
+  $query = "DELETE FROM vaccines WHERE vaccine_id=" . $_GET['id'];
+  $result = $conn->query($query);
+
+  $query = "SELECT * FROM vaccines";
+  $result = $conn->query($query);
+}
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About WebApp</title>
+</head>
+<style>
+body{
+  background-color: blue;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+}
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 60px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-family: Times New Roman;
+  outline: none;
+  color: black;
+  background-color: lightblue;
+  border: black;
+  box-shadow: 0 10px black;
+  margin: 50px 50px 50px 100px;
+}
+.button:hover {background-color: lightgreen;}
+.button:active {
+  background-color: lightcyan;
+  box-shadow: 0 6px skyblue;
+  transform: translateY(4px);
+}
+div.transbox {
+  margin: 100px;
+  border: 5px solid black;
+  background-color: lightblue;
+  opacity: 0.6;
+}
+div.transbox h1 {
+  margin: 45px;
+  font-weight: bold;
+  color: black;
+  font-size: 100px;
+  font-family: Times New Roman;
+  text-align: center;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+<body>
+  <a href="index.php"><button class="button">Back</button></a>
+  <a href="add_vaccine.php"><button class="button">Add</button></a>
+<div class="transbox" style="">
+  <h1>Vaccine</h1>
+  <!-- name 	expiry 	batch 	 -->
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Expiry</th>
+    <th>Batch</th>
+    <th>Action</th>
+  </tr>
+    <?php
+      if($result && $result->num_rows > 0) {
+        while($row = $result->fetch_assoc()){ 
+          $vaccine_id = $row['vaccine_id']; 	
+          $name = $row['name']; 	
+          $expiry = $row['expiry']; 	
+          $batch = $row['batch']; 	
+    ?>
+          <tr>
+            <td><?php echo $vaccine_id ?></td>
+            <td><?php echo $name ?></td>
+            <td><?php echo $expiry ?></td>
+            <td><?php echo $batch ?></td>
+            <td>
+              <a href="add_vaccine.php?edit=edit&id=<?php echo $vaccine_id ?>">EDIT</a>
+              <a href="?delete=delete&id=<?php echo $vaccine_id ?>">DELETE</a>
+            </td>
+          </tr>
+        <?php
+        }
+      }
+    ?>
+ 
+</table>
+</div>
+</body>
+</html>
